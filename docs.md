@@ -24,4 +24,10 @@ Sets the new value at `key`. Will override previously set values, but preserves 
 
 Deletes the current value at `key`. Future `get`s will use the default value.
 
+### globals.makeExport( key )
+__params__
+- _key_ `String` - The key value to access.
+
+Creates an export, for preserving legacy functionality. Returns a function which is both a getter (no arguments) and a setter (one argument).
+
 ## Use Cases

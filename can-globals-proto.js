@@ -30,4 +30,19 @@ Globals.prototype.initialize = function(key, value, cache) {
 	});
 };
 
+Globals.prototype.makeExport = function(key) {
+	return function(value) {
+		if (arguments.length === 0) {
+			return this[key];
+		}
+
+		if (typeof value === 'undefined') {
+			delete this[key];
+		}
+		else {
+			this[key] = value;
+		}
+	}.bind(this);
+};
+
 module.exports = Globals;
