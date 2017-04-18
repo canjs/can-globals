@@ -31,3 +31,53 @@ __params__
 Creates an export, for preserving legacy functionality. Returns a function which is both a getter (no arguments) and a setter (one argument).
 
 ## Use Cases
+
+### Setting Default Properties
+```javascript
+const globals = require('can-globals');
+// Set the global key's default value to the window object
+globals.initialize('global', window);
+```
+
+### Setting a dynamic Property
+```javascript
+const globals = require('can-globals');
+// To make the value dynamic you can set it to a function
+globals.initialize("isRoot", function() {
+  return window.location.pathname === "/";
+});
+```
+
+### Cached dynamic Property
+```javascript
+const globals = require('can-globals');
+// A third argument of true is passed to enable caching
+// The function is called once and the returned value is cached for the next use
+globals.initialize("isWebkit", function() {
+  var div = document.createElement("div");
+  return "WebkitTransition" in div.style;
+}, true);
+```
+
+### Setting a method-like Property
+```javascript
+const globals = require('can-globals');
+
+globals.initialize("isBrowserWindow", function() {
+  return function(w) {
+    return typeof window !== "undefined" &&
+      typeof document !== "undefined" && typeof SimpleDOM === "undefined";
+  };
+});
+```
+
+### Overwriting/Restoring Properties
+```javascript
+const globals = require('can-globals');
+
+globals.initialize('global', window);
+// Overwrite global with an empty object
+globals.global = {};
+// Restore to default
+delete globals.global;
+```
