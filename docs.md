@@ -69,6 +69,8 @@ globals.initialize("isBrowserWindow", function() {
       typeof document !== "undefined" && typeof SimpleDOM === "undefined";
   };
 });
+
+globals.isBrowserWindow();
 ```
 
 ### Overwriting/Restoring Properties
