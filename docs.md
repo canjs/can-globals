@@ -42,9 +42,10 @@ globals.initialize('global', window);
 ### Setting a dynamic Property
 ```javascript
 const globals = require('can-globals');
-// To make the value dynamic you can set it to a function
-globals.initialize("isRoot", function() {
-  return window.location.pathname === "/";
+// To make the value lazy you can set it to a function
+globals.initialize("isBrowserWindow", function() {
+  return typeof window !== "undefined" &&
+    typeof document !== "undefined" && typeof SimpleDOM === "undefined";
 });
 ```
 
@@ -63,14 +64,14 @@ globals.initialize("isWebkit", function() {
 ```javascript
 const globals = require('can-globals');
 
-globals.initialize("isBrowserWindow", function() {
-  return function(w) {
-    return typeof window !== "undefined" &&
-      typeof document !== "undefined" && typeof SimpleDOM === "undefined";
+// To make the value a method, it must lazily return a function.
+globals.initialize("isRoot", function() {
+  return function(pathname) {
+    return (pathname || window.location.pathname) === "/";
   };
 });
 
-globals.isBrowserWindow();
+globals.isRoot();
 ```
 
 ### Overwriting/Restoring Properties
