@@ -1,0 +1,13 @@
+[
+	{"can-globals": [
+		"can-globals/can-globals-proto",
+		"can-globals/can-globals",
+		"can-globals/custom-event-pollyfill",
+		{"can-globals/js": [
+			"can-globals/js/document/document",
+			"can-globals/js/global/global",
+			"can-globals/js/location/location",
+			"can-globals/js/mutation-observer/mutation-observer"
+		]}
+	]}
+]
