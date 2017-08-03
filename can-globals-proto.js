@@ -1,48 +1,129 @@
-function Globals() {
+'use strict';
+require('./custom-event-pollyfill');
 
+function Globals() {
+	this.eventHandlers = {};
+	this.properties = {};
 }
 
-Globals.prototype.initialize = function(key, value, cache) {
-	var cached = false;
-	Object.defineProperty(Globals.prototype, key, {
-		get: function() {
-			if (!cached && typeof value === "function") {
-				if (cache) {
-					value = value();
-					cached = true;
-				}
-				else {
-					return value();
-				}
-			}
+Globals.prototype.define = function(key, value, enableCache) {
+	if (!this.properties[key]) {
+		this.properties[key] = {
+			// TODO fix this, this seems redundant
+			default: value,
+			value: value,
+			enableCache: enableCache
+		};
+	}
+	// TODO discuss this, I think we should have a n event for this
+	// this.dispatch('define', key, value);
+	return this;
+};
 
-			return value;
-		},
-		set: function set(value) {
-			Object.defineProperty(this, key, {
-				configurable: true,
-				get: function() {
-					return value;
-				},
-				set: set
-			});
+Globals.prototype.dispatch = function(name, key, value) {
+	var event = new CustomEvent(name, {
+		detail: {
+			key: key,
+			value: value
 		}
 	});
+	this.callHandlers(this.eventHandlers[key], event);
+	this.callHandlers(this.eventHandlers[''], event);
+};
+
+Globals.prototype.callHandlers = function(handlers, event){
+	if(handlers){
+		for (var i = 0; i < handlers.length; i++) {
+			handlers[i](event);
+		}
+	}
+};
+
+Globals.prototype.get = function(key){
+	var property = this.properties[key];
+	if (property) {
+		if (typeof property.value === "function") {
+			if (property.enableCache) {
+				property.value = property.value();
+				return property.value;
+			} else {
+				return property.value();
+			}
+		}
+		return property.value;
+	}
+	// TODO discuss this, it seem like a bad idea to me
+	throw key + 'is not defined!';
 };
 
 Globals.prototype.makeExport = function(key) {
+	if (key !== '' && !this.properties[key]) {
+		throw key + ' is not defined!';
+	}
 	return function(value) {
 		if (arguments.length === 0) {
-			return this[key];
+			return this.get(key);
 		}
 
 		if (typeof value === 'undefined') {
-			delete this[key];
-		}
-		else {
-			this[key] = value;
+			this.reset(key);
+		} else {
+			this.set(key, value);
 		}
 	}.bind(this);
+};
+
+Globals.prototype.off = function(key, handler) {
+	if (arguments.length === 1) {
+		handler = key;
+		key = '';
+	}
+	if (key !== '' && !this.properties[key]) {
+		throw key + ' is not defined!';
+	}
+	var handlers = this.eventHandlers[key];
+	if (handlers) {
+		var i = handlers.indexOf(handler);
+		handlers.splice(i, 1);
+		return this;
+	}
+};
+
+Globals.prototype.on = function(key, handler) {
+	if (arguments.length === 1) {
+		handler = key;
+		key = '';
+	}
+	if (key !== '' && !this.properties[key]) {
+		throw key + ' is not defined!';
+	}
+	if (!this.eventHandlers[key]) {
+		this.eventHandlers[key] = [];
+	}
+	this.eventHandlers[key].push(handler);
+	return this;
+};
+
+Globals.prototype.reset = function(key) {
+	if (!this.properties[key]) {
+		throw key + ' is not defined!';
+	}
+	var property = this.properties[key];
+	if (property !== undefined) {
+		property.value = property.default;
+		this.dispatch('reset', key, property.value);
+		return this;
+	}
+};
+
+Globals.prototype.set = function(key, value){
+	if (!this.properties[key]) {
+		throw key + ' is not defined!';
+	}
+	var property = this.properties[key];
+	property.value = value;
+	this.dispatch('set', key, value);
+	return this;
 };
 
 module.exports = Globals;
