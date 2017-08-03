@@ -13,6 +13,7 @@ __params__
 Defines a new global called `key`, who's value defaults to `value` (if it is not a function), or lazily to the return of `value` (if it is a function). If value is a function and `cache` is truthy, the the value function will only be called once, and that result used for all future calls.
 
 #### get( key )
+__params__
 - _key_ `String` - The key value to access.
 
 Returns the current value at `key`. If no value has been set, it will return the default value (if it is not a function). If the default value is a function, it will return the output of the function. This execution is cached if the cache flag was set on initialization.
@@ -20,6 +21,7 @@ Returns the current value at `key`. If no value has been set, it will return the
 `get`ting a key which was not previously `define`d will result in an error.
 
 #### set ( key, value )
+__params__
 - _key_ `String` - The key value to access.
 - _value_ `Any` - The new value.
 
@@ -28,6 +30,7 @@ Sets the new value at `key`. Will override previously set values, but preserves 
 `set`ting a key which was not previously `define`d will result in an error.
 
 #### reset( key )
+__params__
 - _key_ `String` - The key value to access.
 
 Deletes the current value at `key`. Future `get`s will use the default value.
@@ -37,6 +40,7 @@ Deletes the current value at `key`. Future `get`s will use the default value.
 ### Event System
 
 #### on ( [ key, ] observer )
+__params__
 - _key_ `String` - The key value to observe.
 - _observer_ `Function` - The observer callback.
 
@@ -45,6 +49,7 @@ Calls `observer` each time the value of `key` is `set` or `reset`. For no key, `
 `on`ing a key which was not previously `define`d will result in an error. Will not trigger for changes to the return value of lazy defaults.
 
 #### off ( [ key, ] observer )
+__params__
 - _key_ `String` - The key value to observe.
 - _observer_ `Function` - The observer callback.
 
