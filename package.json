@@ -14,7 +14,6 @@
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
-    "document": "bit-docs",
     "build": "node build.js"
   },
   "repository": {
@@ -60,24 +59,5 @@
         "format": "cjs"
       }
     }
-  },
-  "bit-docs": {
-    "dependencies": {
-      "bit-docs-glob-finder": "^0.0.5",
-      "bit-docs-dev": "^0.0.3",
-      "bit-docs-js": "^0.0.3",
-      "bit-docs-generate-readme": "^0.0.8"
-    },
-    "glob": {
-      "pattern": "**/*.{js,md}",
-      "ignore": [
-        "node_modules/**/*",
-        "**/*{-,_,}{test,qunit}{s,}.js"
-      ]
-    },
-    "readme": {
-      "apis": "./doc/apis.json"
-    },
-    "parent": "can-globals"
   }
 }
