@@ -5,7 +5,8 @@
   "main": "can-globals.js",
   "scripts": {
     "preversion": "npm test",
-    "postpublish": "git push --tags && git push",
+    "version": "git commit -am \"Update dist for release\" && git checkout -b release",
+    "postversion": "git push --tags && git checkout master && git branch -D release && git push",
     "testee": "testee test.html --browsers firefox",
     "test": "npm run jshint && npm run testee",
     "jshint": "jshint ./*.js --config",
