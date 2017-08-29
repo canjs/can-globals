@@ -1,10 +1,10 @@
 'use strict';
-var namespace = require('can-namespace');
-var Globals = require('./can-globals-proto');
-var globals = new Globals();
 
-if (namespace.globals) {
-	throw new Error("You can't have two versions of can-globals, check your dependencies");
-} else {
-	module.exports = namespace.globals = globals;
-}
+var globals = require('can-globals/can-globals-instance');
+
+require('./global/global');
+require('./document/document');
+require('./location/location');
+require('./mutation-observer/mutation-observer');
+
+module.exports = globals;

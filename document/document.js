@@ -1,7 +1,7 @@
 'use strict';
 
 require('can-globals/global/global');
-var globals = require('can-globals');
+var globals = require('can-globals/can-globals-instance');
 
 /**
  * @module {function} can-globals/document/document document
