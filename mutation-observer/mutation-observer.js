@@ -24,7 +24,7 @@ var globals = require('can-globals');
  * @return {Object} The MutationObserver object for this JavaScript environment.
  */
 
-globlas.define('MutationObserver', function(){
+globals.define('MutationObserver', function(){
 	var GLOBAL = globals.getKeyValue('global');
 	return GLOBAL.MutationObserver || GLOBAL.WebKitMutationObserver || GLOBAL.MozMutationObserver;
 });

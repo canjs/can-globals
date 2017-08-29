@@ -117,9 +117,12 @@ Globals.prototype.getKeyValue = function(key){
 	var property = this.properties[key];
 	if (property) {
 		if (typeof property.value === 'function') {
+			if(property.cachedValue){
+				return property.cachedValue;
+			}
 			if (property.enableCache) {
-				property.value = property.value();
-				return property.value;
+				property.cachedValue = property.value();
+				return property.cachedValue;
 			} else {
 				return property.value();
 			}
