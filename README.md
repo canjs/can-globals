@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/canjs/can-globals/blob/master/LICENSE)
 [![npm version](https://badge.fury.io/js/can-globals.svg)](https://www.npmjs.com/package/can-globals)
 
-This module provides a dependency injection container. Modules may `define` a key and specify a default value (which can be static, cached lazy, or dynamic lazy), but other code can `set` and `reset` the value as needed. There is also an event system, for alerting on value changes, both specific to a key and for any key.
+An environment agnostic container for global variables. Useful for testing and server-side rendering (SSR), typically used internally by CanJS.
 
 ## Documentation
 
