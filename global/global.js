@@ -3,7 +3,7 @@
 /* global self */
 /* global WorkerGlobalScope */
 
-var globals = require('can-globals');
+var globals = require('can-globals/can-globals-instance');
 
 /**
  * @module {function} can-globals/global/global global
