@@ -145,6 +145,7 @@ Globals.prototype.makeExport = function(key) {
 			this.deleteKeyValue(key);
 		} else {
 			this.setKeyValue(key, value);
+			return value;
 		}
 	}.bind(this);
 };
