@@ -83,7 +83,9 @@ QUnit.test('makeExport undefined property', function() {
 });
 
 QUnit.test('define with cache disabled', function() {
-	var getter = sinon.spy();
+	var getter = sinon.spy(function(){
+		return 'bar';
+	});
 	globals = new Globals();
 	globals.define('foo', getter, false);
 	loop(function(){
@@ -92,8 +94,10 @@ QUnit.test('define with cache disabled', function() {
 	equal(getter.callCount, 5);
 });
 
-QUnit.test('define cache enabled', function() {
-	var getter = sinon.spy();
+QUnit.test('define with cache enabled', function() {
+	var getter = sinon.spy(function(){
+		return 'bar';
+	});
 	globals = new Globals();
 	globals.define('foo', getter);
 	loop(function(){
