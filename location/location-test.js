@@ -3,7 +3,7 @@
 var LOCATION = require('./location');
 var unit = require('../../test-wrapper');
 
-unit.module('can-util/dom/location/location');
+unit.module('can-globals/location/location');
 
 unit.test('Can set a location', function (assert) {
 	var myLoc = {};
