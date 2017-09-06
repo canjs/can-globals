@@ -179,3 +179,14 @@ QUnit.test('make export of key', function() {
 	e(undefined);
 	equal(e(), 'bar');
 });
+
+QUnit.test('reset export value with null (can-stache#288)', function() {
+	var globals = new Globals();
+	globals.define('foo', 'bar');
+	var e = globals.makeExport('foo');
+	equal(e(), 'bar');
+	e('baz');
+	equal(e(), 'baz');
+	e(null);
+	equal(e(), 'bar');
+});

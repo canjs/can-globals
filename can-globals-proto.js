@@ -141,7 +141,7 @@ Globals.prototype.makeExport = function(key) {
 			return this.getKeyValue(key);
 		}
 
-		if (typeof value === 'undefined') {
+		if (typeof value === 'undefined' || value === null) {
 			this.deleteKeyValue(key);
 		} else {
 			this.setKeyValue(key, value);
