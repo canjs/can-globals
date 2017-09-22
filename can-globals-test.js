@@ -22,64 +22,40 @@ function loop(fn, count, ctx){
 
 QUnit.module('can-globals/can-globals-proto');
 
-QUnit.test('get undefined property', function() {
+QUnit.test('getKeyValue of undefined property', function() {
 	globals = new Globals();
-	try{
-		globals.getKeyValue('test');
-	}catch(e){
-		return ok(true);
-	}
-	ok(false);
+	globals.getKeyValue('test');
+	ok(true);
 });
 
-QUnit.test('set undefined property', function() {
+QUnit.test('setKeyValue of undefined property', function() {
 	globals = new Globals();
-	try{
-		globals.setKeyValue('test');
-	}catch(e){
-		return ok(true);
-	}
-	ok(false);
+	globals.setKeyValue('foo', 'bar');
+	equal(globals.getKeyValue('foo'), 'bar');
 });
 
-QUnit.test('reset undefined property', function() {
+QUnit.test('deleteKeyValue of undefined property', function() {
 	globals = new Globals();
-	try{
-		globals.deleteKeyValue('test');
-	}catch(e){
-		return ok(true);
-	}
-	ok(false);
+	globals.deleteKeyValue('test');
+	ok(true);
 });
 
-QUnit.test('on undefined property', function() {
+QUnit.test('onKeyValue of undefined property', function() {
 	globals = new Globals();
-	try{
-		globals.onKeyValue('test', function() {});
-	}catch(e){
-		return ok(true);
-	}
-	ok(false);
+	globals.onKeyValue('test', function() {});
+	ok(true);
 });
 
-QUnit.test('off undefined property', function() {
+QUnit.test('offKeyValue of undefined property', function() {
 	globals = new Globals();
-	try{
-		globals.offKeyValue('test', function() {});
-	}catch(e){
-		return ok(true);
-	}
-	ok(false);
+	globals.offKeyValue('test', function() {});
+	ok(true);
 });
 
-QUnit.test('makeExport undefined property', function() {
+QUnit.test('makeExport of undefined property', function() {
 	globals = new Globals();
-	try{
-		globals.makeExport('test');
-	}catch(e){
-		return ok(true);
-	}
-	ok(false);
+	globals.makeExport('test');
+	ok(true);
 });
 
 QUnit.test('define with cache disabled', function() {
@@ -112,21 +88,21 @@ QUnit.test('define and get a new property', function() {
 	equal(globals.getKeyValue('test'), 'default');
 });
 
-QUnit.test('set existing property to string', function() {
+QUnit.test('setKeyValue of existing property to string', function() {
 	globals = new Globals();
 	globals.define('test', 'default');
 	globals.setKeyValue('test', 'updated');
 	equal(globals.getKeyValue('test'), 'updated');
 });
 
-QUnit.test('set existing property to undefined', function() {
+QUnit.test('setKeyValue of existing property to undefined', function() {
 	globals = new Globals();
 	globals.define('test', 'default');
 	globals.setKeyValue('test', undefined);
 	equal(globals.getKeyValue('test'), undefined);
 });
 
-QUnit.test('set existing property to a function', function() {
+QUnit.test('setKeyValue of existing property to a function', function() {
 	globals = new Globals();
 	globals.define('test', 'default');
 	globals.setKeyValue('test', function(){
@@ -135,12 +111,40 @@ QUnit.test('set existing property to a function', function() {
 	equal(globals.getKeyValue('test'), 'foo');
 });
 
-QUnit.test('reset property to default', function() {
+QUnit.test('setKeyValue on an existing property should reset cache', function(){
+	var globals = new Globals();
+	var bar = sinon.spy(function(){
+		return 'bar';
+	});
+	globals.define('foo', bar);
+	globals.getKeyValue('foo');
+	globals.setKeyValue('foo', function(){
+		return 'baz';
+	});
+	equal(globals.getKeyValue('foo'), 'baz');
+});
+
+QUnit.test('deleteKeyValue to reset property to default', function() {
 	var globals = new Globals();
 	globals.define('test', 'default');
 	globals.setKeyValue('test', 'updated');
 	globals.deleteKeyValue('test');
 	equal(globals.getKeyValue('test'), 'default');
+});
+
+QUnit.test('deleteKeyValue should clear cache', function() {
+	var globals = new Globals();
+	var bar = sinon.spy(function(){
+		return 'bar';
+	});
+	globals.define('foo', bar);
+	globals.getKeyValue('foo');
+	globals.setKeyValue('foo', function(){
+		return 'baz';
+	});
+	globals.deleteKeyValue('foo');
+	globals.getKeyValue('foo');
+	equal(bar.calledTwice, true);
 });
 
 QUnit.test('listen for key change', function() {
@@ -169,7 +173,7 @@ QUnit.test('remove event listener for key', function() {
 	equal(handler.called, false);
 });
 
-QUnit.test('make export of key', function() {
+QUnit.test('makeExport of key', function() {
 	var globals = new Globals();
 	globals.define('foo', 'bar');
 	var e = globals.makeExport('foo');
@@ -189,4 +193,42 @@ QUnit.test('reset export value with null (can-stache#288)', function() {
 	equal(e(), 'baz');
 	e(null);
 	equal(e(), 'bar');
+});
+
+QUnit.test('reset all keys', function(){
+	var globals = new Globals();
+	var bar = sinon.spy(function(){
+		return 'bar';
+	});
+	var qux = sinon.spy(function(){
+		return 'qux';
+	});
+	globals.define('foo', bar);
+	globals.define('baz', qux);
+	loop(function(){
+		globals.getKeyValue('foo');
+		globals.getKeyValue('baz');
+	}, 5);
+	globals.reset();
+	loop(function(){
+		globals.getKeyValue('foo');
+		globals.getKeyValue('baz');
+	}, 5);
+	equal(bar.calledTwice, true);
+	equal(qux.calledTwice, true);
+});
+
+QUnit.test('reset triggers events', function(){
+	var globals = new Globals();
+	var fooHandler = sinon.spy();
+	var barHandler = sinon.spy();
+	globals.define('foo', true);
+	globals.define('bar', true);
+	globals.setKeyValue('foo', false);
+	globals.setKeyValue('bar', false);
+	globals.onKeyValue('foo', fooHandler);
+	globals.onKeyValue('bar', barHandler);
+	globals.reset();
+	equal(fooHandler.called, true);
+	equal(barHandler.called, true);
 });

@@ -2,10 +2,6 @@
 
 var canReflect = require('can-reflect');
 
-function errorMessage(key){
-	return key + ' is not defined!';
-}
-
 function dispatch(key, value) {
 	// jshint -W040
 	var handlers = this.eventHandlers[key];
@@ -100,8 +96,6 @@ Globals.prototype.define = function(key, value, enableCache) {
  * 
  * Returns the current value at `key`. If no value has been set, it will return the default value (if it is not a function). If the default value is a function, it will return the output of the function. This execution is cached if the cache flag was set on initialization.
  * 
- * Getting a key which was not previously defined will result in an error.
- * 
  * ```javascript
  * globals.define('foo', 'bar');
  * globals.getKeyValue('foo'); //-> 'bar'
@@ -129,13 +123,9 @@ Globals.prototype.getKeyValue = function(key){
 		}
 		return property.value;
 	}
-	throw errorMessage(key);
 };
 
 Globals.prototype.makeExport = function(key) {
-	if (key !== '' && !this.properties[key]) {
-		throw errorMessage(key);
-	}
 	return function(value) {
 		if (arguments.length === 0) {
 			return this.getKeyValue(key);
@@ -160,7 +150,6 @@ Globals.prototype.makeExport = function(key) {
  * 
  * Removes `handler` from future change events for `key`.
  * 
- * Removing an observer for a key which was not previously defined will result in an error.
  * 
  * ```javascript
  * var handler = (value) => {
@@ -182,15 +171,14 @@ Globals.prototype.makeExport = function(key) {
  * Returns the instance of `can-globals` for chaining.
  */
 Globals.prototype.offKeyValue = function(key, handler) {
-	if (!this.properties[key]) {
-		throw errorMessage(key);
+	if (this.properties[key]) {
+		var handlers = this.eventHandlers[key];
+		if (handlers) {
+			var i = handlers.indexOf(handler);
+			handlers.splice(i, 1);
+		}
 	}
-	var handlers = this.eventHandlers[key];
-	if (handlers) {
-		var i = handlers.indexOf(handler);
-		handlers.splice(i, 1);
-		return this;
-	}
+	return this;
 };
 
 /**
@@ -202,8 +190,6 @@ Globals.prototype.offKeyValue = function(key, handler) {
  * @signature `globals.onKeyValue(key, handler)`
  * 
  * Calls `handler` each time the value of `key` is set or reset.
- * 
- * Observing a key which was not previously defined will result in an error. Will not trigger for changes to the return value of lazy defaults.
  * 
  * ```javascript
  * globals.define('foo', 'bar');
@@ -223,13 +209,12 @@ Globals.prototype.offKeyValue = function(key, handler) {
  * Returns the instance of `can-globals` for chaining.
  */
 Globals.prototype.onKeyValue = function(key, handler) {
-	if (!this.properties[key]) {
-		throw errorMessage(key);
+	if (this.properties[key]) {
+		if (!this.eventHandlers[key]) {
+			this.eventHandlers[key] = [];
+		}
+		this.eventHandlers[key].push(handler);	
 	}
-	if (!this.eventHandlers[key]) {
-		this.eventHandlers[key] = [];
-	}
-	this.eventHandlers[key].push(handler);
 	return this;
 };
 
@@ -242,8 +227,6 @@ Globals.prototype.onKeyValue = function(key, handler) {
  * @signature `globals.deleteKeyValue(key)`
  * 
  * Deletes the current value at `key`. Future `get`s will use the default value.
- * 
- * Deleting a key which was not previously defined will result in an error.
  * 
  * ```javascript
  * globals.define('global', window);
@@ -259,15 +242,13 @@ Globals.prototype.onKeyValue = function(key, handler) {
  * Returns the instance of `can-globals` for chaining.
  */
 Globals.prototype.deleteKeyValue = function(key) {
-	if (!this.properties[key]) {
-		throw errorMessage(key);
-	}
 	var property = this.properties[key];
 	if (property !== undefined) {
 		property.value = property.default;
+		property.cachedValue = undefined;
 		dispatch.call(this, key, property.value);
-		return this;
 	}
+	return this;
 };
 
 /**
@@ -286,7 +267,7 @@ Globals.prototype.deleteKeyValue = function(key) {
  * 
  * Sets the new value at `key`. Will override previously set values, but preserves the default (see `deleteKeyValue`).
  * 
- * Setting a key which was not previously defined will result in an error.
+ * Setting a key which was not previously defined will call `define` with the key and value.
  * 
  * @param {String} key
  * The key value to access.
@@ -299,11 +280,41 @@ Globals.prototype.deleteKeyValue = function(key) {
  */
 Globals.prototype.setKeyValue = function(key, value){
 	if (!this.properties[key]) {
-		throw errorMessage(key);
+		return this.define(key, value);
 	}
 	var property = this.properties[key];
 	property.value = value;
+	property.cachedValue = undefined;
 	dispatch.call(this, key, value);
+	return this;
+};
+
+/**
+ * @function reset 
+ * @parent can-globals/methods
+ * 
+ * Reset all keys to their default value and clear their caches.
+ * 
+ * @signature `globals.setKeyValue(key, value)`
+ * 
+ * ```javascript
+ * globals.define('foo', 'bar');
+ * globals.setKeyValue('foo', 'baz');
+ * globals.getKeyValue('foo'); //-> 'baz'
+ * globals.reset();
+ * globals.getKeyValue('foo'); //-> 'bar'
+ * ```
+ * 
+ * @return {can-globals}
+ * Returns the instance of `can-globals` for chaining.
+ */
+Globals.prototype.reset = function(){
+	for(var key in this.properties){
+		if(this.properties.hasOwnProperty(key)){
+			this.properties[key].cachedValue = undefined;
+			dispatch.call(this, key, this.getKeyValue(key));
+		}
+	}
 	return this;
 };
 
