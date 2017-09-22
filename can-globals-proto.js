@@ -134,7 +134,13 @@ Globals.prototype.makeExport = function(key) {
 		if (typeof value === 'undefined' || value === null) {
 			this.deleteKeyValue(key);
 		} else {
-			this.setKeyValue(key, value);
+			if (typeof value === 'function'){
+				this.setKeyValue(key, function(){
+					return value;
+				});
+			}else{
+				this.setKeyValue(key, value);
+			}
 			return value;
 		}
 	}.bind(this);
