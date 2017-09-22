@@ -232,3 +232,17 @@ QUnit.test('reset triggers events', function(){
 	equal(fooHandler.called, true);
 	equal(barHandler.called, true);
 });
+
+QUnit.test('export helper value can be set to a function', function(){
+	var globals = new Globals();
+	var spy = sinon.spy();
+	globals.setKeyValue('foo', function(){
+		return function(){};
+	});
+	var fooExport = globals.makeExport('foo');
+	fooExport(spy);
+	QUnit.equal(typeof fooExport(), 'function');
+	QUnit.equal(spy.callCount, 0);
+	fooExport()();
+	QUnit.equal(spy.callCount, 1);
+});
