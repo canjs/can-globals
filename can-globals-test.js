@@ -1,12 +1,12 @@
 'use strict';
 var Globals = require('./can-globals-proto');
 var QUnit = require('./test-wrapper');
-var sinon = require('sinon');
+var spy = require('./spy');
 var globals;
 
 function mapEvents(spy){
-	return spy.args.reduce(function(acc, cur) {
-		return acc.concat(cur[0]);
+	return spy.calls.reduce(function(acc, cur) {
+		return acc.concat(cur.calledWith[0]);
 	},  []);
 }
 
@@ -59,9 +59,7 @@ QUnit.test('makeExport of undefined property', function() {
 });
 
 QUnit.test('define with cache disabled', function() {
-	var getter = sinon.spy(function(){
-		return 'bar';
-	});
+	var getter = spy('bar');
 	globals = new Globals();
 	globals.define('foo', getter, false);
 	loop(function(){
@@ -71,15 +69,13 @@ QUnit.test('define with cache disabled', function() {
 });
 
 QUnit.test('define with cache enabled', function() {
-	var getter = sinon.spy(function(){
-		return 'bar';
-	});
+	var getter = spy('bar');
 	globals = new Globals();
 	globals.define('foo', getter);
 	loop(function(){
 		globals.getKeyValue('foo');
 	}, 5);
-	equal(getter.calledOnce, true);
+	equal(getter.callCount, 1);
 });
 
 QUnit.test('define and get a new property', function() {
@@ -113,9 +109,9 @@ QUnit.test('setKeyValue of existing property to a function', function() {
 
 QUnit.test('setKeyValue on an existing property should reset cache', function(){
 	var globals = new Globals();
-	var bar = sinon.spy(function(){
+	var bar = function() {
 		return 'bar';
-	});
+	};
 	globals.define('foo', bar);
 	globals.getKeyValue('foo');
 	globals.setKeyValue('foo', function(){
@@ -134,9 +130,7 @@ QUnit.test('deleteKeyValue to reset property to default', function() {
 
 QUnit.test('deleteKeyValue should clear cache', function() {
 	var globals = new Globals();
-	var bar = sinon.spy(function(){
-		return 'bar';
-	});
+	var bar = spy('bar');
 	globals.define('foo', bar);
 	globals.getKeyValue('foo');
 	globals.setKeyValue('foo', function(){
@@ -144,12 +138,12 @@ QUnit.test('deleteKeyValue should clear cache', function() {
 	});
 	globals.deleteKeyValue('foo');
 	globals.getKeyValue('foo');
-	equal(bar.calledTwice, true);
+	equal(bar.callCount, 2);
 });
 
 QUnit.test('listen for key change', function() {
 	var globals = new Globals();
-	var handler = sinon.spy();
+	var handler = spy();
 	globals.define('test', 'default');
 	globals.define('foo', 'bar');
 	globals.onKeyValue('test', handler);
@@ -165,12 +159,12 @@ QUnit.test('listen for key change', function() {
 
 QUnit.test('remove event listener for key', function() {
 	var globals = new Globals();
-	var handler = sinon.spy();
+	var handler = spy();
 	globals.define('test', 'foo');
 	globals.onKeyValue('test', handler);
 	globals.offKeyValue('test', handler);
 	globals.setKeyValue('test', 'updated');
-	equal(handler.called, false);
+	equal(handler.callCount, 0);
 });
 
 QUnit.test('makeExport of key', function() {
@@ -197,12 +191,8 @@ QUnit.test('reset export value with null (can-stache#288)', function() {
 
 QUnit.test('reset all keys', function(){
 	var globals = new Globals();
-	var bar = sinon.spy(function(){
-		return 'bar';
-	});
-	var qux = sinon.spy(function(){
-		return 'qux';
-	});
+	var bar = spy('bar');
+	var qux = spy('qux');
 	globals.define('foo', bar);
 	globals.define('baz', qux);
 	loop(function(){
@@ -214,14 +204,14 @@ QUnit.test('reset all keys', function(){
 		globals.getKeyValue('foo');
 		globals.getKeyValue('baz');
 	}, 5);
-	equal(bar.calledTwice, true);
-	equal(qux.calledTwice, true);
+	equal(bar.callCount, 2);
+	equal(qux.callCount, 2);
 });
 
 QUnit.test('reset triggers events', function(){
 	var globals = new Globals();
-	var fooHandler = sinon.spy();
-	var barHandler = sinon.spy();
+	var fooHandler = spy();
+	var barHandler = spy();
 	globals.define('foo', true);
 	globals.define('bar', true);
 	globals.setKeyValue('foo', false);
@@ -229,20 +219,20 @@ QUnit.test('reset triggers events', function(){
 	globals.onKeyValue('foo', fooHandler);
 	globals.onKeyValue('bar', barHandler);
 	globals.reset();
-	equal(fooHandler.called, true);
-	equal(barHandler.called, true);
+	equal(fooHandler.callCount, 1);
+	equal(barHandler.callCount, 1);
 });
 
 QUnit.test('export helper value can be set to a function', function(){
 	var globals = new Globals();
-	var spy = sinon.spy();
+	var foo = spy();
 	globals.setKeyValue('foo', function(){
 		return function(){};
 	});
 	var fooExport = globals.makeExport('foo');
-	fooExport(spy);
+	fooExport(foo);
 	QUnit.equal(typeof fooExport(), 'function');
-	QUnit.equal(spy.callCount, 0);
+	QUnit.equal(foo.callCount, 0);
 	fooExport()();
-	QUnit.equal(spy.callCount, 1);
+	QUnit.equal(foo.callCount, 1);
 });

@@ -45,21 +45,12 @@
   },
   "devDependencies": {
     "bit-docs": "0.0.7",
-    "formatio": "^1.2.0",
     "jshint": "^2.9.5",
     "qunitjs": "^2.4.0",
-    "sinon": "^3.0.0",
     "steal": "^1.5.6",
     "steal-qunit": "^1.0.1",
     "steal-tools": "^1.7.0",
     "testee": "^0.7.0"
-  },
-  "steal": {
-    "meta": {
-      "formatio": {
-        "format": "cjs"
-      }
-    }
   },
   "bit-docs": {
     "dependencies": {
