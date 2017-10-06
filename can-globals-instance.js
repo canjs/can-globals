@@ -8,5 +8,3 @@ if (namespace.globals) {
 } else {
 	module.exports = namespace.globals = globals;
 }
-
-module.exports = globals;
