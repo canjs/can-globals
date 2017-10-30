@@ -1,5 +1,6 @@
 @module {Object} can-globals
-@parent can-infrastructure
+@parent can-js-utilities
+@collection can-infrastructure
 @package ../package.json
 @group can-globals/methods 0 methods
 @group can-globals/modules 1 modules
