@@ -44,6 +44,7 @@ QUnit.test('onKeyValue of undefined property', function() {
 	globals = new Globals();
 	globals.onKeyValue('test', function() {});
 	ok(true);
+	globals.offKeyValue('test');
 });
 
 QUnit.test('offKeyValue of undefined property', function() {
@@ -155,6 +156,7 @@ QUnit.test('listen for key change', function() {
 		'updated',
 		'default'
 	]);
+	globals.offKeyValue('test');
 });
 
 QUnit.test('remove event listener for key', function() {
@@ -221,6 +223,8 @@ QUnit.test('reset triggers events', function(){
 	globals.reset();
 	equal(fooHandler.callCount, 1);
 	equal(barHandler.callCount, 1);
+	globals.offKeyValue('foo');
+	globals.offKeyValue('bar');
 });
 
 QUnit.test('export helper value can be set to a function', function(){
@@ -248,4 +252,15 @@ QUnit.test('onKeyValue should dispatch the resolved value (#29)', function(){
 	globals.setKeyValue('foo', function(){
 		return foo;
 	});
+	globals.offKeyValue('foo');
+});
+
+QUnit.test('onKeyValue should dispatch the default value if new value is undefined (#29)', function(){
+	var globals = new Globals();
+	globals.define('foo', 'bar');
+	globals.onKeyValue('foo', function(value){
+		QUnit.equal(value, 'bar');
+	});
+	globals.setKeyValue('foo', function(){});
+	globals.offKeyValue('foo');
 });
