@@ -7,6 +7,9 @@ function dispatch(key, value) {
 	var handlers = this.eventHandlers[key];
 	if (handlers) {
 		var handlersCopy = handlers.slice();
+		if (typeof value === 'function') {
+			value = value();
+		}
 		for (var i = 0; i < handlersCopy.length; i++) {
 			handlersCopy[i](value);
 		}
@@ -72,7 +75,7 @@ function Globals() {
  * @return {can-globals}
  * Returns the instance of `can-globals` for chaining.
  */
-Globals.prototype.define = function(key, value, enableCache) {
+Globals.prototype.define = function (key, value, enableCache) {
 	if (enableCache === undefined) {
 		enableCache = true;
 	}
@@ -107,11 +110,11 @@ Globals.prototype.define = function(key, value, enableCache) {
  * @return {*}
  * Returns the value of a given key.
  */
-Globals.prototype.getKeyValue = function(key){
+Globals.prototype.getKeyValue = function (key) {
 	var property = this.properties[key];
 	if (property) {
 		if (typeof property.value === 'function') {
-			if(property.cachedValue){
+			if (property.cachedValue) {
 				return property.cachedValue;
 			}
 			if (property.enableCache) {
@@ -125,8 +128,8 @@ Globals.prototype.getKeyValue = function(key){
 	}
 };
 
-Globals.prototype.makeExport = function(key) {
-	return function(value) {
+Globals.prototype.makeExport = function (key) {
+	return function (value) {
 		if (arguments.length === 0) {
 			return this.getKeyValue(key);
 		}
@@ -134,11 +137,11 @@ Globals.prototype.makeExport = function(key) {
 		if (typeof value === 'undefined' || value === null) {
 			this.deleteKeyValue(key);
 		} else {
-			if (typeof value === 'function'){
-				this.setKeyValue(key, function(){
+			if (typeof value === 'function') {
+				this.setKeyValue(key, function () {
 					return value;
 				});
-			}else{
+			} else {
 				this.setKeyValue(key, value);
 			}
 			return value;
@@ -176,7 +179,7 @@ Globals.prototype.makeExport = function(key) {
  * @return {can-globals}
  * Returns the instance of `can-globals` for chaining.
  */
-Globals.prototype.offKeyValue = function(key, handler) {
+Globals.prototype.offKeyValue = function (key, handler) {
 	if (this.properties[key]) {
 		var handlers = this.eventHandlers[key];
 		if (handlers) {
@@ -214,12 +217,12 @@ Globals.prototype.offKeyValue = function(key, handler) {
  * @return {can-globals}
  * Returns the instance of `can-globals` for chaining.
  */
-Globals.prototype.onKeyValue = function(key, handler) {
+Globals.prototype.onKeyValue = function (key, handler) {
 	if (this.properties[key]) {
 		if (!this.eventHandlers[key]) {
 			this.eventHandlers[key] = [];
 		}
-		this.eventHandlers[key].push(handler);	
+		this.eventHandlers[key].push(handler);
 	}
 	return this;
 };
@@ -247,7 +250,7 @@ Globals.prototype.onKeyValue = function(key, handler) {
  * @return {can-globals}
  * Returns the instance of `can-globals` for chaining.
  */
-Globals.prototype.deleteKeyValue = function(key) {
+Globals.prototype.deleteKeyValue = function (key) {
 	var property = this.properties[key];
 	if (property !== undefined) {
 		property.value = property.default;
@@ -284,7 +287,7 @@ Globals.prototype.deleteKeyValue = function(key) {
  * @return {can-globals}
  * Returns the instance of `can-globals` for chaining.
  */
-Globals.prototype.setKeyValue = function(key, value){
+Globals.prototype.setKeyValue = function (key, value) {
 	if (!this.properties[key]) {
 		return this.define(key, value);
 	}
@@ -314,9 +317,9 @@ Globals.prototype.setKeyValue = function(key, value){
  * @return {can-globals}
  * Returns the instance of `can-globals` for chaining.
  */
-Globals.prototype.reset = function(){
-	for(var key in this.properties){
-		if(this.properties.hasOwnProperty(key)){
+Globals.prototype.reset = function () {
+	for (var key in this.properties) {
+		if (this.properties.hasOwnProperty(key)) {
 			this.properties[key].cachedValue = undefined;
 			dispatch.call(this, key, this.getKeyValue(key));
 		}
