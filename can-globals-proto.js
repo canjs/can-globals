@@ -320,6 +320,7 @@ Globals.prototype.setKeyValue = function (key, value) {
 Globals.prototype.reset = function () {
 	for (var key in this.properties) {
 		if (this.properties.hasOwnProperty(key)) {
+			this.properties[key].value = this.properties[key].default;
 			this.properties[key].cachedValue = undefined;
 			dispatch.call(this, key, this.getKeyValue(key));
 		}
