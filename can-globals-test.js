@@ -254,13 +254,3 @@ QUnit.test('onKeyValue should dispatch the resolved value (#29)', function(){
 	});
 	globals.offKeyValue('foo');
 });
-
-QUnit.test('onKeyValue should dispatch the default value if new value is undefined (#29)', function(){
-	var globals = new Globals();
-	globals.define('foo', 'bar');
-	globals.onKeyValue('foo', function(value){
-		QUnit.equal(value, 'bar');
-	});
-	globals.setKeyValue('foo', function(){});
-	globals.offKeyValue('foo');
-});

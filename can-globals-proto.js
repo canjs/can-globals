@@ -10,9 +10,6 @@ function dispatch(key, value) {
 		if (typeof value === 'function') {
 			value = value();
 		}
-		if (value === undefined) {
-			value = this.properties[key].default;
-		}
 		for (var i = 0; i < handlersCopy.length; i++) {
 			handlersCopy[i](value);
 		}
