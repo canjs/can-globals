@@ -7,7 +7,7 @@ function isBrowserWindow(){
 		typeof document !== 'undefined' && typeof SimpleDOM === 'undefined';
 }
 
-QUnit.module('can-globals/js/global');
+QUnit.module('can-globals/global/global');
 
 test('basics', function(){
 	if(isBrowserWindow()) {
