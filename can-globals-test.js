@@ -191,7 +191,7 @@ QUnit.test('reset export value with null (can-stache#288)', function() {
 	equal(e(), 'bar');
 });
 
-QUnit.test('reset all keys', function(){
+QUnit.test('reset cleares cache on all keys', function(){
 	var globals = new Globals();
 	var bar = spy('bar');
 	var qux = spy('qux');
@@ -208,6 +208,17 @@ QUnit.test('reset all keys', function(){
 	}, 5);
 	equal(bar.callCount, 2);
 	equal(qux.callCount, 2);
+});
+
+QUnit.test('reset should reset all keys to default value (#31)', function(){
+	var globals = new Globals();
+	globals.define('foo', 'bar');
+	globals.define('baz', 'qux');
+	globals.setKeyValue('foo', 'red');
+	globals.setKeyValue('baz', 'green');
+	globals.reset();
+	equal(globals.getKeyValue('foo'), 'bar');
+	equal(globals.getKeyValue('baz'), 'qux');
 });
 
 QUnit.test('reset triggers events', function(){
