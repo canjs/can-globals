@@ -2,14 +2,12 @@
 
 var canReflect = require('can-reflect');
 
-function dispatch(key, value) {
+function dispatch(key) {
 	// jshint -W040
 	var handlers = this.eventHandlers[key];
 	if (handlers) {
 		var handlersCopy = handlers.slice();
-		if (typeof value === 'function') {
-			value = value();
-		}
+		var value = this.getKeyValue(key);
 		for (var i = 0; i < handlersCopy.length; i++) {
 			handlersCopy[i](value);
 		}
@@ -255,7 +253,7 @@ Globals.prototype.deleteKeyValue = function (key) {
 	if (property !== undefined) {
 		property.value = property.default;
 		property.cachedValue = undefined;
-		dispatch.call(this, key, property.value);
+		dispatch.call(this, key);
 	}
 	return this;
 };
@@ -294,7 +292,7 @@ Globals.prototype.setKeyValue = function (key, value) {
 	var property = this.properties[key];
 	property.value = value;
 	property.cachedValue = undefined;
-	dispatch.call(this, key, value);
+	dispatch.call(this, key);
 	return this;
 };
 
@@ -322,7 +320,7 @@ Globals.prototype.reset = function () {
 		if (this.properties.hasOwnProperty(key)) {
 			this.properties[key].value = this.properties[key].default;
 			this.properties[key].cachedValue = undefined;
-			dispatch.call(this, key, this.getKeyValue(key));
+			dispatch.call(this, key);
 		}
 	}
 	return this;

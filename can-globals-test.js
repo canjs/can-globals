@@ -265,3 +265,13 @@ QUnit.test('onKeyValue should dispatch the resolved value (#29)', function(){
 	});
 	globals.offKeyValue('foo');
 });
+
+QUnit.test('onKeyValue should not trigger multiple calls of the value function (#33)', function(){
+	var globals = new Globals();
+	var baz = spy('baz');
+	globals.define('foo', 'bar');
+	globals.onKeyValue('foo', function(){});
+	globals.setKeyValue('foo', baz);
+	globals.getKeyValue('foo');
+	equal(baz.callCount, 1);
+});
