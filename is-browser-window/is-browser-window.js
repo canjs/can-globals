@@ -2,6 +2,9 @@
 
 var globals = require('can-globals/can-globals-instance');
 
+// This module depends on isNode being defined
+require('../is-node/is-node');
+
 /**
  * @module {function} can-globals/is-browser-window/is-browser-window is-browser-window
  * @parent can-globals/modules
@@ -22,8 +25,10 @@ var globals = require('can-globals/can-globals-instance');
  */
 
 globals.define('isBrowserWindow', function(){
+	var isNode = globals.getKeyValue('isNode');
 	return typeof window !== "undefined" &&
-		typeof document !== "undefined" && typeof SimpleDOM === "undefined";
+		typeof document !== "undefined" &&
+		isNode === false;
 });
 
 module.exports = globals.makeExport('isBrowserWindow');
