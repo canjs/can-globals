@@ -7,5 +7,6 @@ require('./document/document');
 require('./location/location');
 require('./mutation-observer/mutation-observer');
 require('./is-browser-window/is-browser-window');
+require('./is-node/is-node');
 
 module.exports = globals;

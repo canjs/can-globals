@@ -22,8 +22,10 @@ var globals = require('can-globals/can-globals-instance');
  */
 
 globals.define('isBrowserWindow', function(){
+	var isNode = globals.getKeyValue('isNode');
 	return typeof window !== "undefined" &&
-		typeof document !== "undefined" && typeof SimpleDOM === "undefined";
+		typeof document !== "undefined" &&
+		isNode === false;
 });
 
 module.exports = globals.makeExport('isBrowserWindow');
