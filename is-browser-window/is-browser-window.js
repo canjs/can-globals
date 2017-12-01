@@ -2,6 +2,9 @@
 
 var globals = require('can-globals/can-globals-instance');
 
+// This module depends on isNode being defined
+require('../is-node/is-node');
+
 /**
  * @module {function} can-globals/is-browser-window/is-browser-window is-browser-window
  * @parent can-globals/modules
