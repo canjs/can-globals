@@ -10,8 +10,8 @@
 @type {Object} The `can-globals` package exports an object with
 methods used to set and get global variables. For example, get the global [`location`](https://developer.mozilla.org/en-US/docs/Web/API/Window/location) object:
 
-```js
-const globals = require('can-globals');
+```javascript
+import globals from 'can-globals';
 
 const LOCATION = globals.getKeyValue('location');
 ```
@@ -19,8 +19,8 @@ const LOCATION = globals.getKeyValue('location');
 New keys can be defined with the `define` method, overwritten with the `set` method, and reset to their original value with the `reset` method.
 All of these methods are demonstrated in the following example
 
-```js
-const globals = require('can-globals');
+```javascript
+import globals from 'can-globals';
 
 globals.define('foo', 'bar'); // foo === 'bar'
 
