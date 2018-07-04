@@ -1,3 +1,4 @@
+"use strict";
 var testType = typeof process !== 'undefined' && process.env.TEST;
 var isMochaQUnitUI = testType === 'mocha';
 var isQunit = testType === 'qunit';
