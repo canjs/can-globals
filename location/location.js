@@ -25,7 +25,11 @@ var globals = require('can-globals/can-globals-instance');
  * @return {Object} The location object for this JavaScript environment.
  */
 globals.define('location', function(){
-	return globals.getKeyValue('global').location;
+	let location = globals.getKeyValue('global').location;
+	if (!location) {
+		throw new Error('Could not find global.location please read https://github.com/canjs/can-globals')
+	}
+	return location;
 });
 
 module.exports = globals.makeExport('location');
