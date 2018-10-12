@@ -24,7 +24,7 @@ import globals from "can-globals";
 
 globals.define( "foo", "bar" ); // foo === 'bar'
 
-globals.set( "foo", "baz" ); // foo === 'baz'
+globals.setKeyValue( "foo", "baz" ); // foo === 'baz'
 
 globals.reset( "foo" ); // foo === 'bar'
 ```
