@@ -30,16 +30,10 @@ var globals = require('can-globals/can-globals-instance');
  *
  * @return {Object} The global object for this JavaScript environment.
  */
-globals.define('global', function(){
-	// Web Worker
-	return (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) ? self :
-
-		// Node.js
-		typeof process === 'object' &&
-		{}.toString.call(process) === '[object process]' ? global :
-
-		// Browser window
-		window;
+globals.define('global', function getGlobal() {
+  return (function(global) {
+    return global;
+  })(new Function('return this;')());
 });
 
 module.exports = globals.makeExport('global');
