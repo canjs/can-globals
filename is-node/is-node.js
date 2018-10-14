@@ -21,8 +21,7 @@ var globals = require('can-globals/can-globals-instance');
  */
 
 globals.define('isNode', function(){
-	return typeof process === "object" &&
-		{}.toString.call(process) === "[object process]";
+	return (process.release.name === 'node')
 });
 
 module.exports = globals.makeExport('isNode');
