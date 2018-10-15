@@ -25,7 +25,7 @@ var globals = require('can-globals/can-globals-instance');
  * @return {Object} The window object for this JavaScript environment.
  */
 globals.define('document', function(){
-	return globals.getKeyValue('global').document;
+	return globals.getKeyValue('document') || globals.getKeyValue('global').document;
 });
 
 module.exports = globals.makeExport('document');
