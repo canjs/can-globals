@@ -19,9 +19,12 @@ var globals = require('can-globals/can-globals-instance');
  *
  * @return {Boolean} True if running in Node.js
  */
-
-globals.define('isNode', function(){
-	return (process.release.name === 'node')
+globals.define('isNode', function isNode() {
+  let isNode = false;
+  try {
+    isNode = (({ process: { release: { name: name } }})=>(name === 'node'))(new Function('return this;')());
+  } catch(e) {}
+  return isNode;
 });
 
 module.exports = globals.makeExport('isNode');
