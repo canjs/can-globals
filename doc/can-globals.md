@@ -16,7 +16,7 @@ import globals from "can-globals";
 const LOCATION = globals.getKeyValue( "location" );
 ```
 
-New keys can be defined with the `define` method, overwritten with the `set` method, and reset to their original value with the `reset` method.
+New keys can be defined with the `define` method, overwritten with the `setKeyValue` method, and reset to their original value with the `reset` method.
 All of these methods are demonstrated in the following example
 
 ```js
@@ -24,7 +24,7 @@ import globals from "can-globals";
 
 globals.define( "foo", "bar" ); // foo === 'bar'
 
-globals.set( "foo", "baz" ); // foo === 'baz'
+globals.setKeyValue( "foo", "baz" ); // foo === 'baz'
 
 globals.reset( "foo" ); // foo === 'bar'
 ```
