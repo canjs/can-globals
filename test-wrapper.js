@@ -6,12 +6,12 @@ var isQunit = testType === 'qunit';
 if (isMochaQUnitUI) {
 	// mocha-qunit-ui does not support async
 	QUnit.assert.async = function () {
-		QUnit.stop();
+		var done = assert.async();
 		return function done (error) {
 			if (error) {
-				return QUnit.ok(false, '' + error);
+				return assert.ok(false, '' + error);
 			}
-			QUnit.start();
+			done();
 		};
 	};
 
