@@ -39,7 +39,7 @@
   "homepage": "https://github.com/canjs/can-globals#readme",
   "dependencies": {
     "can-namespace": "^1.0.0",
-    "can-reflect": "^1.2.6",
+    "can-reflect": "^1.17.10",
     "can-symbol": "^1.0.0"
   },
   "devDependencies": {
